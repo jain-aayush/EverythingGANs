@@ -34,13 +34,15 @@
     <main role="main" class="container">
       <div class="row">
         <div class="col-md-8">
+            {% block content %}
+            {% endblock %}
         </div>
         <div class="col-md-4">
           <div class="content-section">
             <h3>Navigation Bar</h3>
             <p class='text-muted'>Quick Links
               <ul class="list-group">
-                <li class="list-group-item list-group-item-light"><a href="#about">About</a></li>
+                  <li class="list-group-item list-group-item-light"><a href="{{ url_for('about') }}">About</a></li>
                 <li class="list-group-item list-group-item-light"><a href="#recbooks">Derain Image</a></li>
                 <li class="list-group-item list-group-item-light"><a href="#recbooks">Animate Me</li>
                 <li class="list-group-item list-group-item-light"><a href="#recbooks">Image Superresolution</li>
