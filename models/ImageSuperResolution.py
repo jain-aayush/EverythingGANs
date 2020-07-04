@@ -1,4 +1,6 @@
+import os
 import tensorflow as tf
+import numpy as np
 
 def resBlock(model):
     orig = model
@@ -37,20 +39,24 @@ def Generator():
     return gen_model
 
 def normalize(image):
-    image = image/255.0
+    image = (image / 127.5) - 1
     return image
 
 def preprocess(image):
+    image = np.array(image)
     image = normalize(image)
+    image = tf.expand_dims(image, axis = 0)
     return image
 
 def build_generator():
     generator = Generator()
-    generator.load_weights('srganGenerator.h5')
+    CURRENT_WORKING_DIRECTORY = str(os.getcwd())
+    generator.load_weights(CURRENT_WORKING_DIRECTORY + '/models/srganGenerator.h5')
     return generator
 
 def predict(image):
     image = preprocess(image)
     generator = build_generator()
     superres_image = generator.predict(image)
-    return image
+    superres_image = tf.squeeze(superres_image, axis = 0)
+    return superres_image.numpy()
