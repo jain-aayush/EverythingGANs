@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h1> Image Superresolution </h1>
+   
+    {% if image_file %}
+        <h3> Image </h3>
+        <div>
+            <img src="{{ image_file }}" style="margin:20px">
+        </div>
+        {% if "superresolved" not in image_file %}
+            <form method="post" action="{{ url_for('superresolve', image_file = image_file.split("/")[-1] ) }}" enctype="multipart/form-data">
+                <p> 
+                    <input type="submit" value="Image Superresolution">
+                </p>
+            </form>
+        {% endif %}
+
+    {% else %}
+
+        <h3>Upload an image for Superresolution</h3>
+
+         <form method="post" action="{{ url_for('superresolution') }}" enctype="multipart/form-data">
+             <dl>
+                 <p> 
+                     <input type="file" name="file" autocomplete="off" required>
+                 </p>
+             </dl>
+                 <p> 
+                     <input type="submit" value="Submit">
+                 </p>
+        </form>
+
+    {% endif %}
+{% endblock content %} 
