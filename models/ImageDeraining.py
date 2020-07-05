@@ -1,3 +1,5 @@
+import os
+import numpy as np
 import tensorflow as tf
 
 def normalize(input_image):
@@ -86,15 +88,19 @@ def Generator():
 
 def build_generator():
     generator = Generator()
-    generator.load_weights('derain.h5')
+    CURRENT_WORKING_DIRECTORY = str(os.getcwd())
+    generator.load_weights(CURRENT_WORKING_DIRECTORY + '/models/derain.h5')
     return generator
 
 def preprocess(image):
+    image = np.array(image)
     image = normalize(image)
+    image = tf.expand_dims(image, axis = 0)
     return image
 
 def predict(image):
     image = preprocess(image)
     generator = build_generator()
-    derained_image = generator(image)
-    return image
+    derained_image = generator(image, training = False)
+    derained_image = tf.squeeze(derained_image, axis = 0)
+    return derained_image.numpy()
