@@ -1,3 +1,5 @@
+import os
+import numpy as np
 import tensorflow as tf
 import tensorflow_addons as tfad
 
@@ -38,7 +40,7 @@ def Generator():
       inputs = tf.keras.layers.Input(shape=[None,None,3])
 
       down_stack = [
-      downsample(64, 4, apply_batchnorm=False), 
+      downsample(64, 4, apply_instancenorm=False), 
       downsample(128, 4), 
       downsample(256, 4), 
       downsample(512, 4), 
@@ -84,7 +86,8 @@ def Generator():
 
 def build_generator():
     generator = Generator()
-    generator.load_weights('ImageSuperResolution.h5')
+    CURRENT_WORKING_DIRECTORY = str(os.getcwd())
+    generator.load_weights(CURRENT_WORKING_DIRECTORY + '/models/animateMe.h5')
     return generator
 
 def normalize(image):
@@ -92,11 +95,14 @@ def normalize(image):
     return image
 
 def preprocess(image):
+    image = np.array(image)
     image = normalize(image)
+    image = tf.expand_dims(image, axis = 0)
     return image
 
 def predict(image):
     image = preprocess(image)
     generator = build_generator()
-    animated_image = generator(image)
-    return image
+    animated_image = generator(image, training = False)
+    animated_image = tf.squeeze(animated_image, axis = 0)
+    return animated_image.numpy()
