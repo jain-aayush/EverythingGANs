@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h2> Animate Me </h2>
+   
+    {% if image_file %}
+        <h3> Image </h3>
+        <div>
+            <img src="{{ image_file }}" style="margin:20px">
+        </div>
+        {% if "animated" not in image_file %}
+            <form method="post" action="{{ url_for('animate', image_file = image_file.split("/")[-1] ) }}" enctype="multipart/form-data">
+                <p> 
+                    <input type="submit" value="Animate This">
+                </p>
+            </form>
+        {% endif %}
+
+    {% else %}
+
+        <h3>Upload an image to animate it</h3>
+
+         <form method="post" action="{{ url_for('animateme') }}" enctype="multipart/form-data">
+             <dl>
+                 <p> 
+                     <input type="file" name="file" autocomplete="off" required>
+                 </p>
+             </dl>
+                 <p> 
+                     <input type="submit" value="Submit">
+                 </p>
+        </form>
+
+    {% endif %}
+{% endblock content %} 
