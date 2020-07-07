@@ -39,7 +39,7 @@ def Generator():
     return gen_model
 
 def normalize(image):
-    image = (image / 127.5) - 1
+    image = image / 255.0
     return image
 
 def preprocess(image):
