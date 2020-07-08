@@ -56,7 +56,7 @@ def superresolution():
 def superresolve(image_file):
     image = Image.open(CURRENT_WORKING_DIRECTORY/'static/uploads'/image_file)
     predicted_image = superres_predict(image)
-    predicted_image = np.uint8((predicted_image*0.5 + 0.5)*255.0)
+    predicted_image = np.uint8(predicted_image)
     predicted_image = Image.fromarray(predicted_image)
     new_name = image_file.split('.')[0] + '_superresolved.jpeg'
     predicted_image.save(CURRENT_WORKING_DIRECTORY/'static/uploads'/new_name)
