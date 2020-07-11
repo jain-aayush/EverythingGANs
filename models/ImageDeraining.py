@@ -1,11 +1,14 @@
+#importing the required libraries
 import os
 import numpy as np
 import tensorflow as tf
 
+#normalizing image pixels to [-1,1]
 def normalize(input_image):
     input_image = (input_image / 127.5) - 1
     return input_image
 
+#downsample block of the architecture
 def downsample(filters, size, apply_batchnorm=True):
     initializer = tf.random_normal_initializer(0., 0.02)
 
@@ -20,6 +23,7 @@ def downsample(filters, size, apply_batchnorm=True):
 
     return result
 
+#upsample block of the architecture
 def upsample(filters, size, apply_dropout=False):
     initializer = tf.random_normal_initializer(0., 0.02)
 
@@ -38,6 +42,7 @@ def upsample(filters, size, apply_dropout=False):
 
     return result
 
+#Pix2Pix generator using u-net inspired architecture
 def Generator():
     inputs = tf.keras.layers.Input(shape=[None,None,3])
 
@@ -86,21 +91,24 @@ def Generator():
 
     return tf.keras.Model(inputs=inputs, outputs=x)
 
+#helper function to load weights and build the generator
 def build_generator():
     generator = Generator()
     CURRENT_WORKING_DIRECTORY = str(os.getcwd())
     generator.load_weights(CURRENT_WORKING_DIRECTORY + '/models/derain.h5')
     return generator
 
+#preprocessing function
 def preprocess(image):
     image = np.array(image)
     image = normalize(image)
-    image = tf.expand_dims(image, axis = 0)
+    image = tf.expand_dims(image, axis = 0)#convert 3D tensor into 4D tensor
     return image
 
+#function to generate the derained image
 def predict(image):
     image = preprocess(image)
     generator = build_generator()
     derained_image = generator(image, training = False)
-    derained_image = tf.squeeze(derained_image, axis = 0)
-    return derained_image.numpy()
+    derained_image = tf.squeeze(derained_image, axis = 0)#converting the 4D Tensor bck to a 3D tensor
+    return derained_image.numpy()#returning a numpy array instead of a Tensor
